@@ -3,7 +3,15 @@ return {
     "williamboman/mason.nvim",
     lazy = false,
     config = function()
-      require("mason").setup()
+      require("mason").setup({
+        ui = {
+          icons = {
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗"
+          }
+        }
+      })
     end,
   },
   {
@@ -32,6 +40,17 @@ return {
       })
       lspconfig.lua_ls.setup({
         capabilities = capabilities,
+      })
+
+      lspconfig.intelephense.setup({
+        capabilities = capabilities,
+        settings = {
+          intelephense = {
+            format = {
+              enable = true,
+            },
+          },
+        },
       })
       
       -- Configure YAML Language Server with Kubernetes schemas
