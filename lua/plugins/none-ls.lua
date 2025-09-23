@@ -24,6 +24,7 @@ return {
 					filetypes = { "terraform", "hcl", "tf", "tfvars" },
 				}),
 			},
+			debug = true, -- Enable debug mode to see what's happening
 		})
 
 		-- Format keybinding

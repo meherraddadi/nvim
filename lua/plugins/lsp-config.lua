@@ -118,6 +118,10 @@ return {
         capabilities = capabilities,
         filetypes = { "terraform", "hcl", "tf", "tfvars" },
         on_attach = function(client, bufnr)
+          -- Enable formatting for terraformls
+          client.server_capabilities.documentFormattingProvider = true
+          client.server_capabilities.documentRangeFormattingProvider = true
+          
           -- Enable advanced module resolution
           client.config.settings = {
             terraform = {
