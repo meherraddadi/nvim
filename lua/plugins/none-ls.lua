@@ -10,7 +10,7 @@ return {
 				null_ls.builtins.formatting.black,
 				null_ls.builtins.formatting.isort,
 				null_ls.builtins.formatting.terraform_fmt.with({
-					filetypes = { "terraform", "hcl", "tf" },
+					filetypes = { "terraform", "hcl", "tf", "tfvars" },
 				}),
 				-- YAML formatting
 				null_ls.builtins.formatting.yamlfmt,
@@ -21,7 +21,7 @@ return {
 
 				-- Diagnostics
 				null_ls.builtins.diagnostics.terraform_validate.with({
-					filetypes = { "terraform", "hcl", "tf" },
+					filetypes = { "terraform", "hcl", "tf", "tfvars" },
 				}),
 			},
 		})

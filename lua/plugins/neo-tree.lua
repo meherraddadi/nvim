@@ -64,8 +64,11 @@ return {
         hijack_netrw_behavior = "disabled",
         filtered_items = {
           visible = false,
-          hide_dotfiles = true,
-          hide_gitignored = true,
+          -- hide_dotfiles = true,
+          -- hide_gitignored = true,
+        },
+        window = {
+          position = "float", -- ou "left"/"right" si tu préfères l'intégrer
         },
       },
       buffers = {
