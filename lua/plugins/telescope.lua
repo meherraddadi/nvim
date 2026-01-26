@@ -41,10 +41,14 @@ return {
 
     --Keymaps
     -- Rechercher dans les buffers ouverts
-    vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Find Buffers' })
+    vim.keymap.set('n', '<leader>pb', builtin.buffers, { desc = 'Find Buffers' })
     vim.keymap.set('n', '<C-p>', builtin.find_files, {})
     vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-    vim.keymap.set("n", "<leader>pr", "<cmd>Telescope oldfiles<CR>", { desc = "Fuzzy find recent files" })
+    vim.keymap.set("n", "<leader>pr", function()
+      builtin.oldfiles({ cwd_only = true })
+    end, { desc = "Fuzzy find recent files (cwd only)" })
+    -- vim.keymap.set("n", "<leader>ps", function() require("snacks").picker.grep() end, desc = "Grep word" })
+
     vim.keymap.set("n", "<leader>pWs", function()
       local word = vim.fn.expand("<cWORD>")
       builtin.grep_string({ search = word })

@@ -21,4 +21,6 @@ require("terraform-filetype")
 require("debug-terraform")
 
 require("vim-options")
-require("lazy").setup("plugins")
+require("lazy").setup({
+  { import = "plugins" },
+})
