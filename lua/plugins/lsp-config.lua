@@ -17,32 +17,28 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     lazy = false,
+    dependencies = { "williamboman/mason.nvim" },
     opts = {
-      --auto_install = true,
       automatic_installation = true,
     },
   },
   {
     "neovim/nvim-lspconfig",
     lazy = false,
+    dependencies = { "williamboman/mason-lspconfig.nvim", "hrsh7th/cmp-nvim-lsp" },
     config = function()
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      local lspconfig = require("lspconfig")
-      lspconfig.ts_ls.setup({
-        capabilities = capabilities,
-      })
-      lspconfig.solargraph.setup({
-        capabilities = capabilities,
-      })
-      lspconfig.html.setup({
-        capabilities = capabilities,
-      })
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-      })
+      -- Servers with default config
+      local simple_servers = { "ts_ls", "solargraph", "html", "lua_ls" }
+      for _, server in ipairs(simple_servers) do
+        vim.lsp.config(server, {
+          capabilities = capabilities,
+        })
+      end
 
-      lspconfig.intelephense.setup({
+      -- Intelephense with custom settings
+      vim.lsp.config("intelephense", {
         capabilities = capabilities,
         settings = {
           intelephense = {
@@ -52,9 +48,9 @@ return {
           },
         },
       })
-      
-      -- Configure YAML Language Server with Kubernetes schemas
-      lspconfig.yamlls.setup({
+
+      -- YAML Language Server with Kubernetes schemas
+      vim.lsp.config("yamlls", {
         capabilities = capabilities,
         settings = {
           yaml = {
@@ -113,57 +109,40 @@ return {
         },
         filetypes = { "yaml", "yml" }
       })
-      -- Configure Terraform LS with log silencing
-      lspconfig.terraformls.setup({
+
+      -- Terraform LS
+      vim.lsp.config("terraformls", {
         capabilities = capabilities,
         filetypes = { "terraform", "hcl", "tf", "tfvars" },
-        on_attach = function(client, bufnr)
-          -- Enable formatting for terraformls
-          client.server_capabilities.documentFormattingProvider = true
-          client.server_capabilities.documentRangeFormattingProvider = true
-          
-          -- Enable advanced module resolution
-          client.config.settings = {
-            terraform = {
-              enableModuleResolution = true, -- Critical for jumping to modules
-              lsp = {
-                logLevel = "Error",          -- Keep your log silencing
-              },
+        settings = {
+          terraform = {
+            enableModuleResolution = true,
+            lsp = {
+              logLevel = "Error",
             },
-          }
-
-          -- Keymaps for Terraform files only
-          vim.keymap.set("n", "gd", function()
-            vim.lsp.buf.definition({ reuse_win = true }) -- Jump without splitting
-          end, { buffer = bufnr, desc = "[G]oto [D]efinition" })
-
-          vim.keymap.set(
-            "n",
-            "gD",
-            vim.lsp.buf.declaration,
-            { buffer = bufnr, desc = "[G]oto [D]eclaration" }
-          )
-        end,
-        root_dir = lspconfig.util.root_pattern("*.tf", "*.tfvars", ".terraform", ".git"), -- Better project detection
+          },
+        },
       })
 
-      -- Configure TFLint with explicit args
-      -- lspconfig.tflint.setup({
-      --   capabilities = capabilities,
-      --   filetypes = { "terraform", "hcl", "tf" },
-      --   cmd = {
-      --     "tflint",
-      --     "--langserver",
-      --     "--config",
-      --     "$ROOT/.tflint.hcl",                  -- Use project-specific config
-      --     "--enable-rule=aws_instance_invalid_type", -- Example rule
-      --   },
-      -- })
+      -- Enable all configured servers
+      vim.lsp.enable({ "ts_ls", "solargraph", "html", "lua_ls", "intelephense", "yamlls", "terraformls" })
 
+      -- Global LSP keymaps
       vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
       vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
       vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, {})
       vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
+
+      -- Terraform-specific keymaps via autocommand
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "terraform", "hcl", "tf", "tfvars" },
+        callback = function(args)
+          vim.keymap.set("n", "gd", function()
+            vim.lsp.buf.definition({ reuse_win = true })
+          end, { buffer = args.buf, desc = "[G]oto [D]efinition" })
+          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = args.buf, desc = "[G]oto [D]eclaration" })
+        end,
+      })
     end,
   },
 }
