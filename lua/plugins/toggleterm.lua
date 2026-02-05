@@ -7,7 +7,7 @@ return {
       -- ===== Basic Settings =====
       size = 15,
       open_mapping = [[<leader>tt]], -- Main toggle (disable if using custom keymaps)
-      direction = "float",           -- "horizontal" | "vertical" | "tab" | "float"
+      direction = "horizontal",      -- "horizontal" | "vertical" | "tab" | "float"
       shade_terminals = true,
       persist_size = true,
       close_on_exit = true,
@@ -67,6 +67,9 @@ return {
     map("n", "<leader>ai", "<cmd>TermExec cmd='claude -c' direction=float<CR>", { desc = "Claude Code CLI" })
     -- Toggle last terminal (overrides default <C-\> if needed)
     map("n", "<C-\\>", "<cmd>ToggleTerm<CR>", { desc = "Toggle last terminal" })
+
+    -- Fix space latency in terminal (leader key conflict)
+    map("t", "<Space>", "<Space>", { nowait = true, desc = "Send space immediately" })
 
     -- Terminal mode navigation
     map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" }) -- Return to Normal mode
