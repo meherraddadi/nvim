@@ -15,7 +15,7 @@ return {
       -- ===== Terminal Appearance =====
       float_opts = {
         border = "rounded", -- "single" | "double" | "shadow" | "curved"
-        winblend = 0.9,       -- Transparency (0-100)
+        winblend = 0,       -- Transparency (0-100, integer)
       },
     })
 
@@ -62,11 +62,15 @@ return {
       hidden = true,
     })
     map("n", "<leader>tg", function() lazygit:toggle() end, opts)
+
+    -- Claude Code CLI integration
+    map("n", "<leader>ai", "<cmd>TermExec cmd='claude -c' direction=float<CR>", { desc = "Claude Code CLI" })
     -- Toggle last terminal (overrides default <C-\> if needed)
     map("n", "<C-\\>", "<cmd>ToggleTerm<CR>", { desc = "Toggle last terminal" })
 
     -- Terminal mode navigation
     map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" }) -- Return to Normal mode
+    map("t", "<Esc><Esc>", "<C-\\><C-n><cmd>q<CR>", { desc = "Close terminal" }) -- Close terminal
     map("t", "<C-h>", "<Cmd>wincmd h<CR>", { desc = "Move left from terminal" })
     map("t", "<C-j>", "<Cmd>wincmd j<CR>", { desc = "Move down from terminal" })
     map("t", "<C-k>", "<Cmd>wincmd k<CR>", { desc = "Move up from terminal" })

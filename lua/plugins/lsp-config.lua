@@ -30,7 +30,7 @@ return {
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
       -- Servers with default config
-      local simple_servers = { "ts_ls", "solargraph", "html", "lua_ls" }
+      local simple_servers = { "ts_ls", "solargraph", "html", "lua_ls", "dockerls", "bashls" }
       for _, server in ipairs(simple_servers) do
         vim.lsp.config(server, {
           capabilities = capabilities,
@@ -55,7 +55,9 @@ return {
         settings = {
           yaml = {
             schemas = {
+              -- CI/CD
               ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+              ["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] = ".gitlab-ci.yml",
               ["https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json"] = {
                 "/*.k8s.yaml",
                 "/*.k8s.yml",
@@ -125,7 +127,7 @@ return {
       })
 
       -- Enable all configured servers
-      vim.lsp.enable({ "ts_ls", "solargraph", "html", "lua_ls", "intelephense", "yamlls", "terraformls" })
+      vim.lsp.enable({ "ts_ls", "solargraph", "html", "lua_ls", "intelephense", "yamlls", "terraformls", "dockerls", "bashls" })
 
       -- Global LSP keymaps
       vim.keymap.set("n", "K", vim.lsp.buf.hover, {})

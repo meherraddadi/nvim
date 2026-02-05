@@ -16,8 +16,8 @@ return {
 				null_ls.builtins.formatting.yamlfmt,
 				-- PHP formatting
 				null_ls.builtins.formatting.phpcsfixer,
-				-- Alternative PHP formatter (if php-cs-fixer is not available)
-				-- null_ls.builtins.formatting.phpcbf,
+				-- Bash/Shell formatting
+				null_ls.builtins.formatting.shfmt,
 
 				-- Diagnostics
 				null_ls.builtins.diagnostics.terraform_validate.with({
