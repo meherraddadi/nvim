@@ -25,7 +25,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     lazy = false,
-    dependencies = { "williamboman/mason-lspconfig.nvim", "hrsh7th/cmp-nvim-lsp" },
+    dependencies = { "williamboman/mason-lspconfig.nvim", "hrsh7th/cmp-nvim-lsp", "b0o/schemastore.nvim" },
     config = function()
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
@@ -49,48 +49,40 @@ return {
         },
       })
 
-      -- YAML Language Server with Kubernetes schemas
+      -- YAML Language Server with SchemaStore + Kubernetes schemas
       vim.lsp.config("yamlls", {
         capabilities = capabilities,
         settings = {
           yaml = {
-            schemas = {
-              -- CI/CD
-              ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
-              ["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] = ".gitlab-ci.yml",
-              ["https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json"] = {
-                "/*.k8s.yaml",
-                "/*.k8s.yml",
-                "/k8s/*.yaml",
-                "/k8s/*.yml",
-                "/kubernetes/*.yaml",
-                "/kubernetes/*.yml",
-                "/**/k8s/**/*.yaml",
-                "/**/k8s/**/*.yml",
-                "/**/kubernetes/**/*.yaml",
-                "/**/kubernetes/**/*.yml",
-                "deployment.yaml",
-                "deployment.yml",
-                "service.yaml",
-                "service.yml",
-                "configmap.yaml",
-                "configmap.yml",
-                "secret.yaml",
-                "secret.yml",
-                "ingress.yaml",
-                "ingress.yml",
-                "pod.yaml",
-                "pod.yml",
-                "namespace.yaml",
-                "namespace.yml"
+            schemas = require("schemastore").yaml.schemas({
+              extra = {
+                -- Kubernetes schemas (v1.31 - up to date)
+                {
+                  name = "Kubernetes",
+                  description = "Kubernetes resource definitions",
+                  url = "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/all.json",
+                  fileMatch = {
+                    "/*.k8s.yaml", "/*.k8s.yml",
+                    "/k8s/*.yaml", "/k8s/*.yml",
+                    "/kubernetes/*.yaml", "/kubernetes/*.yml",
+                    "/**/k8s/**/*.yaml", "/**/k8s/**/*.yml",
+                    "/**/kubernetes/**/*.yaml", "/**/kubernetes/**/*.yml",
+                    "deployment.yaml", "deployment.yml",
+                    "service.yaml", "service.yml",
+                    "configmap.yaml", "configmap.yml",
+                    "secret.yaml", "secret.yml",
+                    "ingress.yaml", "ingress.yml",
+                    "pod.yaml", "pod.yml",
+                    "namespace.yaml", "namespace.yml",
+                  },
+                },
               },
-              ["https://json.schemastore.org/kustomization.json"] = "kustomization.yaml",
-              ["https://json.schemastore.org/chart.json"] = "Chart.yaml"
-            },
+            }),
             validate = true,
             completion = true,
             hover = true,
             schemaStore = {
+              -- Disable built-in schemaStore, using b0o/schemastore.nvim instead
               enable = false,
               url = "",
             },
@@ -112,6 +104,19 @@ return {
         filetypes = { "yaml", "yml" }
       })
 
+      -- Helm LS
+      vim.lsp.config("helm_ls", {
+        capabilities = capabilities,
+        filetypes = { "helm" },
+        settings = {
+          ["helm-ls"] = {
+            yamlls = {
+              path = "yaml-language-server",
+            },
+          },
+        },
+      })
+
       -- Terraform LS
       vim.lsp.config("terraformls", {
         capabilities = capabilities,
@@ -127,7 +132,7 @@ return {
       })
 
       -- Enable all configured servers
-      vim.lsp.enable({ "ts_ls", "solargraph", "html", "lua_ls", "intelephense", "yamlls", "terraformls", "dockerls", "bashls" })
+      vim.lsp.enable({ "ts_ls", "solargraph", "html", "lua_ls", "intelephense", "yamlls", "helm_ls", "terraformls", "dockerls", "bashls" })
 
       -- Global LSP keymaps
       vim.keymap.set("n", "K", vim.lsp.buf.hover, {})

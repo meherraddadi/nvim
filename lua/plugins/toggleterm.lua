@@ -5,7 +5,7 @@ return {
   config = function()
     require("toggleterm").setup({
       -- ===== Basic Settings =====
-      size = 15,
+      size = 25,
       open_mapping = [[<leader>tt]], -- Main toggle (disable if using custom keymaps)
       direction = "horizontal",      -- "horizontal" | "vertical" | "tab" | "float"
       shade_terminals = true,

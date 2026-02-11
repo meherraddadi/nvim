@@ -23,6 +23,8 @@ return {
 				null_ls.builtins.diagnostics.terraform_validate.with({
 					filetypes = { "terraform", "hcl", "tf", "tfvars" },
 				}),
+				-- Kubernetes linter (best practices, security)
+				null_ls.builtins.diagnostics.kube_linter,
 			},
 			debug = true, -- Enable debug mode to see what's happening
 		})
